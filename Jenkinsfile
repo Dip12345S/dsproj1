@@ -1,22 +1,17 @@
 pipeline {
     agent any
     stages {
-        stage('Clean Up') {
+        stage('Checkout with Version Control') {
             steps {
-                deleteDir()
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Dip12345S/dsproj1.git']])
             }
         }
-        stage('Clone Repo') {
+        stage('Built Docker Image') {
             steps {
-                sh "git clone https://github.com/Dip12345S/myproj.git"
+                script{
+                    sh 'docker built -t dsproj1 .'
+                }
             }
         }
-        stage('Test') {
-            agent { dockerfile true }
-            steps {
-                sh 'echo Testing......>'
-				sh 'python --version'
-            }
-        }        
     }
 }
